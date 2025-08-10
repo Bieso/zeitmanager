@@ -1,0 +1,185 @@
+<!doctype html>
+<html lang="de">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1" />
+<title>Zeitmanager – Visual & Fast</title>
+<link rel="manifest" href="/manifest.json">
+<meta name="theme-color" content="#0f1115">
+<link rel="stylesheet" href="css/stlye.css">
+</head>
+<body>
+
+<div class="wrap" id="app">
+
+  <!-- Header -->
+  <div class="header">
+    <button class="ghost hidden" id="backBtn">←</button>
+    <h1 id="mainTitle">⏱️ Zeit‑Dashboard <span class="pill mono" id="datetag"></span></h1>
+  </div>
+
+  <!-- HOME -->
+  <section id="view-home" class="grid">
+    <div class="card">
+      <div class="row" style="justify-content: space-between; align-items: center;">
+        <h2>Kategorien</h2>
+        <div class="row" style="gap: 10px;">
+          <button id="prevCatBtn" class="ghost">‹</button>
+          <button id="nextCatBtn" class="ghost">›</button>
+        </div>
+      </div>
+      <div id="categoryCards" class="cards">
+  <div class="carousel-wrap" id="homeCarousel"></div>
+</div>
+    </div>
+
+    <div class="card">
+      <h2>Wochenübersicht</h2>
+      <div id="weeklyPie" class="chart"></div>
+      <div id="weeklyPieLegend" class="legend"></div>
+    </div>
+
+    <div class="card">
+      <h2>Merkübersicht</h2>
+      <div class="list" id="notesList"></div>
+      <div class="row">
+        <input id="noteInput" placeholder="Gedanke/To‑Do notieren …" />
+        <button class="primary" id="addNoteBtn">+ Merken</button>
+      </div>
+    </div>
+  </section>
+
+  <!-- CATEGORIES -->
+  <section id="view-categories" class="grid hidden">
+    <!-- category cards will be generated here -->
+  </section>
+
+  <!-- ANALYSIS -->
+  <section id="view-analysis" class="grid hidden">
+    <div class="card">
+      <h2>Hauptkategorien</h2>
+      <div id="mainPie" class="chart"></div>
+      <div id="mainPieLegend" class="legend"></div>
+    </div>
+
+    <div class="card">
+      <h2>Unterkategorien – Balken</h2>
+      <div class="row stretch">
+        <select id="barCategorySelect"></select>
+        <button class="ghost" id="prev7">−7d</button>
+        <button class="ghost" id="next7">+7d</button>
+      </div>
+      <small class="muted" id="barRangeInfo"></small>
+      <div id="subBar" class="chart"></div>
+    </div>
+
+    <div class="card">
+      <h2>Verlauf – investierte Zeit</h2>
+      <div class="row stretch">
+        <select id="lineCategorySelect"></select>
+        <select id="lineWindow">
+          <option value="7">7 Tage</option>
+          <option value="14">14 Tage</option>
+          <option value="30" selected>30 Tage</option>
+          <option value="90">90 Tage</option>
+        </select>
+      </div>
+      <div id="timeLine" class="chart"></div>
+    </div>
+  </section>
+
+  <!-- AI -->
+  <section id="view-ai" class="grid hidden">
+    <div class="card">
+      <h2>AI‑Erfassung (Demo)</h2>
+      <p class="muted">
+        Idee: Audio/Calendar analysieren, Kategorien automatisch vorschlagen.
+        Für jetzt kannst du eine natürliche Spracheingabe testen:
+      </p>
+      <div class="row stretch">
+        <input id="nlpInput" placeholder='z.B. "Heute 35min Social Media → Schneiden → Shorts"' />
+        <button class="primary" id="nlpAdd">Verarbeiten</button>
+      </div>
+      <div id="nlpFeedback" class="muted" style="margin-top:8px"></div>
+    </div>
+  </section>
+
+  <!-- FAB -->
+  <button class="plus-fab" id="addBtn">+ Eintrag</button>
+
+  <!-- Tab Bar -->
+  <nav class="tabbar">
+    <a class="tab active" data-tab="home"><span class="ic">🏠</span>Home</a>
+    <a class="tab" data-tab="analysis"><span class="ic">📊</span>Analysis</a>
+    <a class="tab" data-tab="ai"><span class="ic">🤖</span>AI</a>
+  </nav>
+</div>
+
+<!-- DIALOG: Add / Edit -->
+<dialog id="entryDlg">
+  <div class="dlg-h">
+    <strong id="dlgTitle">Zeit erfassen</strong>
+    <button class="ghost" onclick="entryDlg.close()">✕</button>
+  </div>
+  <form method="dialog" class="dlg-b" id="entryForm">
+    <label>Titel der Kategorie
+      <input id="catTitle" required placeholder="z. B. Social Media / Sport" />
+    </label>
+    <label>Beschreibung (optional)
+      <input id="catDesc" placeholder="kurz & knackig" />
+    </label>
+
+    <div>
+      <label>Pfad der Unterkategorien (optional)</label>
+      <small class="muted">Verwende &rsaquo; als Trenner. Beispiel: <span class="mono">Schneiden › Shorts › Quantenmechanik</span></small>
+      <input id="subPath" placeholder="Unterkategorie › Sub › SubSub …" />
+    </div>
+
+    <div class="row stretch">
+      <label style="flex:1">Dauer (Minuten)
+        <input id="minutes" type="number" min="1" step="1" value="30" required/>
+      </label>
+      <label style="flex:1">Zeitstempel
+        <input id="ts" type="datetime-local"/>
+      </label>
+    </div>
+  </form>
+  <div class="dlg-f">
+    <button class="ghost" onclick="entryDlg.close()">Abbrechen</button>
+    <button class="primary" id="saveEntry">Speichern</button>
+  </div>
+</dialog>
+
+<!-- DIALOG: Edit/Delete Category Node -->
+<dialog id="editDlg">
+  <div class="dlg-h">
+    <strong>Knoten bearbeiten</strong>
+    <button class="ghost" onclick="editDlg.close()">✕</button>
+  </div>
+  <div class="dlg-b">
+    <div><strong id="editPath" class="mono"></strong></div>
+    <label>Neuer Titel <input id="editTitle"/></label>
+    <label>Beschreibung <input id="editDesc"/></label>
+  </div>
+  <div class="dlg-f">
+    <button class="danger" id="deleteNode">Löschen</button>
+    <span class="right"></span>
+    <button class="primary" id="applyEdit">Übernehmen</button>
+  <script src="js/main.js"></script>
+</body>
+</html>
+<script>
+  if ('serviceWorker' in navigator) {
+    navigator.serviceWorker.register('/sw.js').then(() => {
+      console.log('Service Worker registriert');
+    });
+  }
+  
+  // Speicher persistent anfragen (damit Browser nicht löscht)
+  if (navigator.storage && navigator.storage.persist) {
+    navigator.storage.persist().then(ok => {
+      console.log('Persistent storage granted?', ok);
+    });
+  }
+  </script>
+  

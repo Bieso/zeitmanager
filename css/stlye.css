@@ -1,0 +1,171 @@
+:root{
+  --bg:#0f1115; --bg2:#141821; --card:#191f2b; --elev:#1e2533;
+  --txt:#e7eaf0; --muted:#9aa3b2; --primary:#4ea8ff; --accent:#7ee787;
+  --danger:#ff6b6b; --warn:#ffd166; --outline:#2a3243; --ring:#355386;
+}
+*{box-sizing:border-box}
+html,body{height:100%;background:var(--bg);color:var(--txt);font:16px/1.35 system-ui,-apple-system,Segoe UI,Roboto,Inter,Ubuntu,"Helvetica Neue",Arial}
+h1,h2,h3{margin:.2rem 0 1rem}
+h1{font-size:1.6rem} h2{font-size:1.25rem} h3{font-size:1.05rem}
+small, .muted{color:var(--muted)}
+a{color:inherit;text-decoration:none}
+button,input,select,textarea{color:var(--txt);background:var(--bg2);border:1px solid var(--outline);border-radius:12px;padding:.85rem .95rem}
+input,select,textarea{width:100%}
+button{cursor:pointer;user-select:none}
+button.primary{background:linear-gradient(180deg,#2a66ff,#1746b7);border:0}
+button.ghost{background:transparent;border:1px solid var(--outline)}
+button.warn{background:#2a1d00;border-color:#514000;color:#ffd166}
+button.danger{background:#2a1416;border-color:#4a2225;color:#ff868b}
+.pill{padding:.35rem .6rem;border-radius:999px;border:1px solid var(--outline);font-size:.75rem}
+.wrap{max-width:980px;margin:0 auto;padding:16px 14px 92px}
+.grid{display:grid;gap:14px}
+.cards{display:grid;gap:14px;grid-template-columns:1fr 1fr}
+@media (max-width:760px){ .cards{grid-template-columns:1fr} }
+
+/* Nav */
+.tabbar{position:fixed;left:0;right:0;bottom:0;background:rgba(15,17,21,.8);
+  backdrop-filter:blur(10px);border-top:1px solid var(--outline);display:flex;z-index:20}
+.tab{flex:1;text-align:center;padding:12px 6px;color:var(--muted)}
+.tab.active{color:var(--txt)}
+.tab .ic{display:block;font-size:1.2rem;margin-bottom:2px}
+.header{position:sticky;top:0;z-index:10;background:linear-gradient(180deg,rgba(15,17,21,.98),rgba(15,17,21,.9) 60%,transparent);
+  padding:12px 14px 8px;margin:-16px -14px 10px;border-bottom:1px solid rgba(42,50,67,.4)}
+.header h1{display:flex;align-items:center;gap:10px}
+.plus-fab{position:fixed;right:18px;bottom:86px;background:var(--primary);color:#fff;border:0;border-radius:20px;
+  padding:.8rem 1rem;box-shadow:0 10px 30px rgba(78,168,255,.35)}
+
+/* Cards */
+.card{background:var(--card);border:1px solid var(--outline);border-radius:16px;padding:14px}
+.card h3{margin:0 0 .6rem}
+.row{display:flex;gap:10px;align-items:center}
+.row.stretch > *{flex:1}
+.chip{display:inline-flex;gap:8px;align-items:center;padding:.35rem .6rem;border-radius:999px;background:#151a23;border:1px solid var(--outline);font-size:.8rem}
+.mono{font-family:ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", monospace}
+
+/* Lists */
+.list{display:grid;gap:10px}
+.item{background:var(--bg2);border:1px solid var(--outline);border-radius:14px;padding:12px}
+.item .actions{display:flex;gap:8px}
+.item .path{color:var(--muted);font-size:.8rem}
+
+/* Dialog / sheet */
+dialog{border:1px solid var(--outline);background:var(--elev);color:var(--txt);border-radius:16px;padding:0;width:min(560px,96%);}
+dialog::backdrop{background:rgba(0,0,0,.6);backdrop-filter:blur(2px)}
+.dlg-h{padding:14px;border-bottom:1px solid var(--outline);display:flex;justify-content:space-between;align-items:center}
+.dlg-b{padding:14px;display:grid;gap:10px}
+.dlg-f{padding:14px;border-top:1px solid var(--outline);display:flex;gap:10px;justify-content:flex-end}
+.hr{height:1px;background:var(--outline);margin:6px 0}
+
+/* Charts (SVG) */
+.chart{width:100%;height:260px}
+.legend{display:flex;flex-wrap:wrap;gap:8px;margin-top:8px}
+.legend .chip{border-color:transparent}
+.center{display:flex;align-items:center;justify-content:center}
+.empty{color:var(--muted);padding:22px;border:1px dashed var(--outline);border-radius:13px;text-align:center}
+
+/* Tiny helpers */
+.right{margin-left:auto}
+.hidden{display:none !important}
+
+#view-categories .item {
+  min-height: 48px;
+}
+
+#view-categories .mini-pie {
+  width: 36px !important;
+  height: 36px !important;
+}
+
+/**Animationen**/
+/* === Animations === */
+
+/* Generic fade/slide for views */
+.view-enter {
+opacity: 0;
+transform: translateY(6px);
+}
+.view-enter.view-enter-active {
+transition: opacity .28s ease, transform .28s ease;
+opacity: 1;
+transform: translateY(0);
+}
+.view-leave {
+opacity: 1;
+transform: translateY(0);
+}
+.view-leave.view-leave-active {
+transition: opacity .24s ease, transform .24s ease;
+opacity: 0;
+transform: translateY(-6px);
+}
+
+/* Carousel slide for the single category card */
+.carousel-wrap {
+position: relative;
+min-height: 92px; /* Platz, damit nix springt */
+}
+.carousel-item {
+will-change: transform, opacity;
+}
+.slide-in-left { opacity: 0; transform: translateX(-16px); }
+.slide-in-right{ opacity: 0; transform: translateX(16px); }
+.slide-in-left.slide-in-active,
+.slide-in-right.slide-in-active {
+transition: opacity .26s ease, transform .26s ease;
+opacity: 1; transform: translateX(0);
+}
+.slide-out-left { opacity: 1; transform: translateX(0); }
+.slide-out-right{ opacity: 1; transform: translateX(0); }
+.slide-out-left.slide-out-active {
+transition: opacity .22s ease, transform .22s ease;
+opacity: 0; transform: translateX(-16px);
+}
+.slide-out-right.slide-out-active {
+transition: opacity .22s ease, transform .22s ease;
+opacity: 0; transform: translateX(16px);
+}
+
+/* Smooth collapse (Kategorien-Unterlisten) */
+.collapse {
+overflow: hidden;
+transition: grid-template-rows .28s ease, opacity .28s ease;
+display: grid;
+grid-template-rows: 0fr;
+opacity: 0;
+}
+.collapse > * { min-height: 0; }
+.collapse.open {
+grid-template-rows: 1fr;
+opacity: 1;
+}
+
+/* Kleine Micro-Interaction fÃ¼r Buttons */
+button:active { transform: translateY(1px); }
+
+/* === Smooth animations layer (CSS-first, non-invasive) === */
+section[id^="view-"]:not(.hidden){
+animation: viewSlideIn .26s ease-out both;
+}
+@keyframes viewSlideIn {
+from { opacity: 0; transform: translateX(18px); }
+to   { opacity: 1; transform: translateX(0); }
+}
+#categoryCards[data-dir="next"] .item { animation: cardInFromRight .24s ease-out both; }
+#categoryCards[data-dir="prev"] .item { animation: cardInFromLeft  .24s ease-out both; }
+@keyframes cardInFromRight { from { opacity:0; transform: translateX(16px);} to{ opacity:1; transform: none;} }
+@keyframes cardInFromLeft  { from { opacity:0; transform: translateX(-16px);} to{ opacity:1; transform: none;} }
+#view-categories .cards[id^="sub-card-"]:not(.hidden){
+animation: subExpand .24s ease-out both;
+}
+@keyframes subExpand { from { opacity:.0; transform: translateY(-4px) scale(.98);} to{ opacity:1; transform:none; } }
+dialog{ transform-origin: center; }
+dialog[open]{ animation: dlgIn .22s ease-out both; }
+dialog[data-closing]{ animation: dlgOut .18s ease-in both; }
+dialog::backdrop{ transition: opacity .2s ease; opacity: 0; }
+dialog[open]::backdrop{ opacity: 1; }
+dialog[data-closing]::backdrop{ opacity: 0; }
+@keyframes dlgIn  { from{ opacity:0; transform: translateY(10px);} to{ opacity:1; transform:none;} }
+@keyframes dlgOut { from{ opacity:1; transform:none;} to{ opacity:0; transform: translateY(10px);} }
+@media (prefers-reduced-motion: reduce){
+*{ animation-duration: .001s !important; transition-duration: .001s !important; }
+}
